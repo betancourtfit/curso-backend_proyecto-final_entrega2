@@ -21,5 +21,9 @@ const cartSchema = new Schema({
     }
 
 })
-//Parametro 1:Nombre coleccion - Parametro 2: Schema 
+//Parametro 1:Nombre coleccion - Parametro 2: Schema }
+
+cartSchema.pre('findOne', function () {
+    this.populate('products.id_prod')
+})
 export const cartModel = model('carts', cartSchema)

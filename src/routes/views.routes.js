@@ -1,4 +1,5 @@
 import express from "express";
+import { CartManager } from "../dao/models/cartManager.js"
 
 const viewsRouter = express.Router();
 
@@ -19,6 +20,23 @@ viewsRouter.get('/realtimeproducts', (req, res) => {
 
     })
 })
+
+viewsRouter.get('/carts/:cid', async (req, res) => {
+    try {
+        const cid = req.params.cid;
+        const cart = await CartManager.findById(cid);
+        console.log(cart)
+
+        if (cart) {
+            res.render('carts', { products: cart.products });
+        } else {
+            res.status(404).send({ respuesta: 'Error', mensaje: 'Carrito no encontrado' });
+        }
+
+    } catch (error) {
+        res.status(400).send({ respuesta: 'Error', mensaje: error.message });
+    }
+});
 
 
 export default viewsRouter;

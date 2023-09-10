@@ -4,6 +4,9 @@ import mongoose from 'mongoose'
 import { engine } from 'express-handlebars';
 import { Server }  from 'socket.io'
 import dotenv from 'dotenv';
+import exphbs from 'express-handlebars';
+import Handlebars from 'handlebars';
+
 
 //Importacion de rutas
 import viewRouter from './routes/views.routes.js'
@@ -35,7 +38,18 @@ mongoose.connect(`mongodb+srv://curso_backend_juan:${process.env.passmongodb}@cl
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.engine('handlebars', engine()) //Defino que motor de plantillas voy a utilizar y su config
+
+///
+const hbs = exphbs.create({
+    defaultLayout: 'main', // si tienes un layout principal, coloca su nombre aquí
+    handlebars: Handlebars, 
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    }
+});
+
+app.engine('handlebars', hbs.engine) //Defino que motor de plantillas voy a utilizar y su config
 app.set('view engine', 'handlebars') //Setting de mi app de hbs
 app.set('views', path.resolve(__dirname, './views')) //Resolver rutas absolutas a traves de rutas relativas
 app.use('/static', express.static(path.join(__dirname, '/public'))) //Unir rutas en una sola concatenandolas
