@@ -63,9 +63,19 @@ io.on('connection', (socket)=> {
 
     socket.on('add-message', async ({email, mensaje}) => {
         console.log(mensaje)
-        await messageModel.create({email: email, message: mensaje})
-        const messages = await messageModel.find();
-        socket.emit('show-messages', messages);
+        try {
+            if (email && mensaje) {
+                await messageModel.create({email: email, message: mensaje});
+                const messages = await messageModel.find();
+                socket.emit('show-messages', messages);
+            } else {
+                console.error("Email o mensaje no proporcionados o son inválidos.");
+                // Opcionalmente, emite un mensaje de error de vuelta al cliente.
+            }
+        } catch (err) {
+            console.error("Error al guardar el mensaje:", err);
+            // Opcionalmente, emite un mensaje de error de vuelta al cliente.
+        }
     })
 
     socket.on('display-inicial', async() =>{
